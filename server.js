@@ -27,7 +27,8 @@ app.get('/artists/:id', function(req, res) { // request, response
   console.log('req.params.id',req.params.id) // request line
   var artist = artists.find((item)=>{
       return item.id === +req.params.id
-  })
+  });
+
   res.send(artist);
 });
 
