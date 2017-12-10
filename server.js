@@ -1,8 +1,11 @@
 let express = require('express'); //connecting to express
-let app = express(); // server
+
 let bodyParser = require('body-parser'); //Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+let MongoClient = require('mongodb').MongoClient;
 
 
+let app = express(); // server
+let db;
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
     extended: false
@@ -35,6 +38,7 @@ app.get('/', function(req, res) { // request, response
 // artists
 app.get('/artists', function(req, res) { // request, response
   res.send(artists);
+  //   res.sendStatus(200)
 });
 
 // srtists -> id
@@ -54,14 +58,32 @@ app.get('/artists/:id', function(req, res) { // request, response
 //     res.send('welcome, ' + req.body);
 // });
 
-app.post('/artists', function (req, res) {
-    if (!req.body) return res.sendStatus(400);
+// POST Method for db in Array
+
+// app.post('/artists', function (req, res) {
+//     // if (!req.body) return res.sendStatus(400);
+//     let artist = {
+//         id: Date.now(),
+//         name: req.body.name
+//     };
+//     artists = artists.push(artist);
+//     res.send(artist);
+// });
+
+
+// POST Method for dataBase MongoDb
+
+app.post('/artists', function (req,res){
     let artist = {
-        id: Date.now(),
-        name: req.body.name
+        name : req.body.name
     };
-    artists = artists.push(artist);
-    res.send(artist);
+    db.collection('artists').insert(artist, function (err, result){
+        if (err){
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(artist);
+    })
 });
 
 app.put('/artists/:id', function(req,res){
@@ -71,10 +93,25 @@ app.put('/artists/:id', function(req,res){
     });
 
     artist.name = req.body.name;
-    res.send(artist);
+    res.sendStatus(200);
+});
+
+app.delete('/artists/:id', function(req, res){
+    artists = artists.filter((item)=>{
+        return item.id !== +req.params.id
+    });
+    res.sendStatus(200);
+
 });
 
 
 
+MongoClient.connect('mongodb://localhost:27017/myapp', function(err, database){
+    if (err) {
+        return console.log(err);
+    }
+    bd = database;
+    app.listen(3012,()=>console.log('App is started')); // start
+});
 
-app.listen(3012,()=>console.log('App is started')); // start
+//
