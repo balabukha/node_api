@@ -2,6 +2,7 @@ let express = require('express'); //connecting to express
 
 let bodyParser = require('body-parser'); //Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
 let MongoClient = require('mongodb').MongoClient;
+let ObjectId = require('mongodb').ObjectID;
 
 
 let app = express(); // server
@@ -35,21 +36,51 @@ app.get('/', function(req, res) { // request, response
   res.send('hello world');
 });
 
+
+// GET Method for db in Array
+
 // artists
+// app.get('/artists', function(req, res) { // request, response
+//   res.send(artists);
+//   //   res.sendStatus(200)
+// });
+
+// GET Method for dataBase MongoDb
 app.get('/artists', function(req, res) { // request, response
-  res.send(artists);
-  //   res.sendStatus(200)
+db.collection('artists').find().toArray((err, docs)=>{
+    if (err) {
+        console.log(err);
+        return res.sendStatus(500);
+    }
+    // console.log(db.collection('artists'));
+    res.send(docs)
+})
 });
 
-// srtists -> id
-app.get('/artists/:id', function(req, res) { // request, response
-  console.log('req.params', req.params) // request line
-  console.log('req.params.id',req.params.id) // request line
-  var artist = artists.find((item)=>{
-      return item.id === +req.params.id
-  });
 
-  res.send(artist);
+// GET Method for db in Array
+
+// srtists -> id
+// app.get('/artists/:id', function(req, res) { // request, response
+//   console.log('req.params', req.params) // request line
+//   console.log('req.params.id',req.params.id) // request line
+//   var artist = artists.find((item)=>{
+//       return item.id === +req.params.id
+//   });
+//
+//   res.send(artist);
+// });
+
+// GET Method for dataBase MongoDb
+
+app.get('/artists/:id', function(req, res) { // request, response
+    db.collection('artists').findOne({ _id: ObjectId(req.params.id)}, (err, docs) =>{
+        if(err){
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(docs);
+    })
 });
 
 // app.post('/artists', function (req, res) {
@@ -57,6 +88,8 @@ app.get('/artists/:id', function(req, res) { // request, response
 //     if (!req.body) return res.sendStatus(400);
 //     res.send('welcome, ' + req.body);
 // });
+
+
 
 // POST Method for db in Array
 
@@ -86,6 +119,8 @@ app.post('/artists', function (req,res){
     })
 });
 
+
+
 app.put('/artists/:id', function(req,res){
     if (!req.body) return res.sendStatus(400);
     let artist = artists.find((item) => {
@@ -110,8 +145,9 @@ MongoClient.connect('mongodb://localhost:27017/myapp', function(err, database){
     if (err) {
         return console.log(err);
     }
-    bd = database;
+    db = database;
     app.listen(3012,()=>console.log('App is started')); // start
 });
+
 
 //
