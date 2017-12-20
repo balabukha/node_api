@@ -4,9 +4,9 @@ let bodyParser = require('body-parser'); //Parse incoming request bodies in a mi
 let MongoClient = require('mongodb').MongoClient;
 let ObjectId = require('mongodb').ObjectID;
 
-let db = require('./db')
+let db = require('./db');
 let app = express(); // server
-let db;
+// let db;
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({
 	extended: false
@@ -16,20 +16,20 @@ app.use(bodyParser.json());
 
 
 
-let artists = [
-	{
-		id: 1,
-		name: 'Metallica'
-	},
-	{
-		id: 2,
-		name: 'Deep Purple'
-	},
-	{
-		id: 3,
-		name: 'Iron Maiden'
-	}
-];
+// let artists = [
+// 	{
+// 		id: 1,
+// 		name: 'Metallica'
+// 	},
+// 	{
+// 		id: 2,
+// 		name: 'Deep Purple'
+// 	},
+// 	{
+// 		id: 3,
+// 		name: 'Iron Maiden'
+// 	}
+// ];
 
 // main
 app.get('/', function(req, res) { // request, response
@@ -47,7 +47,7 @@ app.get('/', function(req, res) { // request, response
 
 // GET Method for dataBase MongoDb
 app.get('/artists', function(req, res) { // request, response
-	db.collection('artists').find().toArray((err, docs)=>{
+	db.get().collection('artists').find().toArray((err, docs)=>{
 		if (err) {
 			console.log(err);
 			return res.sendStatus(500);
@@ -74,7 +74,7 @@ app.get('/artists', function(req, res) { // request, response
 // GET Method for dataBase MongoDb
 
 app.get('/artists/:id', function(req, res) { // request, response
-	db.collection('artists').findOne({ _id: ObjectId(req.params.id)}, (err, docs) =>{
+	db.get().collection('artists').findOne({ _id: ObjectId(req.params.id)}, (err, docs) =>{
 		if(err){
 			console.log(err);
 			return res.sendStatus(500);
@@ -110,7 +110,7 @@ app.post('/artists', function (req,res){
 	let artist = {
 		name : req.body.name
 	};
-	db.collection('artists').insert(artist, function (err, result){
+	db.get().collection('artists').insert(artist, function (err, result){
 		if (err){
 			console.log(err);
 			return res.sendStatus(500);
@@ -134,7 +134,7 @@ app.post('/artists', function (req,res){
 
 // PUT Method with MongoDb
 app.put('/artists/:id', function(req,res){
-db.collection('artists').updateOne(
+db.get().collection('artists').updateOne(
 	{_id: ObjectId(req.params.id)},
 	{name : req.body.name},
 	(err, docs) =>{
@@ -156,7 +156,7 @@ db.collection('artists').updateOne(
 
 // Delete Method with MongoDb
 app.delete('/artists/:id', function(req,res){
-    db.collection('artists').deleteOne(
+    db.get().collection('artists').deleteOne(
         {_id: ObjectId(req.params.id)},
         (err, docs) =>{
             if(err){
@@ -168,10 +168,12 @@ app.delete('/artists/:id', function(req,res){
 });
 
 
-MongoClient.connect('mongodb://localhost:27017/myapp', function(err, database){
+
+
+db.connect('mongodb://localhost:27017/myapp', function(err, database){
 	if (err) {
 		return console.log(err);
 	}
-	db = database;
+	// db = database;
 	app.listen(3012,()=>console.log('App is started')); // start
 });
