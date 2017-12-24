@@ -4,6 +4,8 @@ let bodyParser = require('body-parser'); //Parse incoming request bodies in a mi
 let MongoClient = require('mongodb').MongoClient;
 let ObjectId = require('mongodb').ObjectID;
 
+let ArtistController = require('./controllers/Artists');
+
 let db = require('./db');
 let app = express(); // server
 // let db;
@@ -46,16 +48,19 @@ app.get('/', function(req, res) { // request, response
 // });
 
 // GET Method for dataBase MongoDb
-app.get('/artists', function(req, res) { // request, response
-	db.get().collection('artists').find().toArray((err, docs)=>{
-		if (err) {
-			console.log(err);
-			return res.sendStatus(500);
-		}
-		// console.log(db.collection('artists'));
-		res.send(docs);
-	});
-});
+app.get('/artists', ArtistController.all
+	// function(req, res) { // request, response
+	// db.get().collection('artists').find().toArray((err, docs)=>{
+	// 	if (err) {
+	// 		console.log(err);
+	// 		return res.sendStatus(500);
+	// 	}
+	// 	// console.log(db.collection('artists'));
+	// 	res.send(docs);
+	// });
+
+// }
+);
 
 
 // GET Method for db in Array
@@ -73,15 +78,17 @@ app.get('/artists', function(req, res) { // request, response
 
 // GET Method for dataBase MongoDb
 
-app.get('/artists/:id', function(req, res) { // request, response
-	db.get().collection('artists').findOne({ _id: ObjectId(req.params.id)}, (err, docs) =>{
-		if(err){
-			console.log(err);
-			return res.sendStatus(500);
-		}
-		res.send(docs);
-	});
-});
+app.get('/artists/:id', ArtistController.findById
+// function(req, res) { // request, response
+// 	db.get().collection('artists').findOne({ _id: ObjectId(req.params.id)}, (err, docs) =>{
+// 		if(err){
+// 			console.log(err);
+// 			return res.sendStatus(500);
+// 		}
+// 		res.send(docs);
+// 	});
+// }
+);
 
 // app.post('/artists', function (req, res) {
 //     console.log(req.body);
@@ -106,18 +113,20 @@ app.get('/artists/:id', function(req, res) { // request, response
 
 // POST Method for dataBase MongoDb
 
-app.post('/artists', function (req,res){
-	let artist = {
-		name : req.body.name
-	};
-	db.get().collection('artists').insert(artist, function (err, result){
-		if (err){
-			console.log(err);
-			return res.sendStatus(500);
-		}
-		res.send(artist);
-	});
-});
+app.post('/artists', ArtistController.create
+// function (req,res){
+// 	let artist = {
+// 		name : req.body.name
+// 	};
+// 	db.get().collection('artists').insert(artist, function (err, result){
+// 		if (err){
+// 			console.log(err);
+// 			return res.sendStatus(500);
+// 		}
+// 		res.send(artist);
+// 	});
+// }
+);
 
 
 
@@ -133,18 +142,20 @@ app.post('/artists', function (req,res){
 // });
 
 // PUT Method with MongoDb
-app.put('/artists/:id', function(req,res){
-db.get().collection('artists').updateOne(
-	{_id: ObjectId(req.params.id)},
-	{name : req.body.name},
-	(err, docs) =>{
-    if(err){
-        console.log(err);
-        return res.sendStatus(500);
-    }
-        res.sendStatus(200);
-});
-});
+app.put('/artists/:id', ArtistController.change
+// function(req,res){
+// db.get().collection('artists').updateOne(
+// 	{_id: ObjectId(req.params.id)},
+// 	{name : req.body.name},
+// 	(err, docs) =>{
+//     if(err){
+//         console.log(err);
+//         return res.sendStatus(500);
+//     }
+//         res.sendStatus(200);
+// });
+// }
+);
 
 // app.delete('/artists/:id', function(req, res){
 // 	artists = artists.filter((item)=>{
@@ -155,17 +166,19 @@ db.get().collection('artists').updateOne(
 // });
 
 // Delete Method with MongoDb
-app.delete('/artists/:id', function(req,res){
-    db.get().collection('artists').deleteOne(
-        {_id: ObjectId(req.params.id)},
-        (err, docs) =>{
-            if(err){
-                console.log(err);
-                return res.sendStatus(500);
-            }
-            res.sendStatus(200);
-        });
-});
+app.delete('/artists/:id', ArtistController.remove
+// function(req,res){
+//     db.get().collection('artists').deleteOne(
+//         {_id: ObjectId(req.params.id)},
+//         (err, docs) =>{
+//             if(err){
+//                 console.log(err);
+//                 return res.sendStatus(500);
+//             }
+//             res.sendStatus(200);
+//         });
+// }
+);
 
 
 
